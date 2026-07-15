@@ -5,7 +5,7 @@ COPY . .
 RUN ./gradlew bootJar --no-daemon
 
 # Stage 2: Create the final image
-FROM eclipse-temurin:17-jre-alpine
+FROM eclipse-temurin:21-jre-alpine
 WORKDIR /application
 COPY --from=builder /app/build/libs/*.jar app.jar
 EXPOSE 8080
