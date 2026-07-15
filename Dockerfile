@@ -1,5 +1,5 @@
 # Stage 1: Build the application
-FROM gradle:8-jdk17 AS builder
+FROM gradle:9-jdk21 AS builder
 WORKDIR /app
 COPY . .
 RUN ./gradlew bootJar --no-daemon
