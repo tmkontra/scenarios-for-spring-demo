@@ -1,3 +1,5 @@
+ARG GH_USERNAME
+ARG GH_TOKEN
 # Stage 1: Build the application
 FROM gradle:9-jdk21 AS builder
 WORKDIR /app
