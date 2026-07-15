@@ -1,7 +1,7 @@
-ARG GH_USERNAME
-ARG GH_TOKEN
 # Stage 1: Build the application
 FROM gradle:9-jdk21 AS builder
+ARG GH_USERNAME
+ARG GH_TOKEN
 WORKDIR /app
 COPY . .
 RUN ./gradlew bootJar --no-daemon
