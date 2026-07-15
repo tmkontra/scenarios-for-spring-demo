@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.4.1'
     id 'io.spring.dependency-management' version '1.1.7'
+    id 'com.github.node-gradle.node' version '7.1.0'
 }
 
 group = 'io.github.tmkontra'
@@ -34,46 +35,22 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
-def npmExecutable = {
-    def executableName = System.getProperty('os.name').toLowerCase().contains('windows') ? 'npm.cmd' : 'npm'
-    def pathMatch = System.getenv('PATH')
-            ?.split(File.pathSeparator)
-            ?.collect { file("$it/$executableName") }
-            ?.find { it.canExecute() }
-
-    if (pathMatch != null) {
-        return pathMatch.absolutePath
-    }
-
-    def nvmDir = System.getenv('NVM_DIR') ?: "${System.getProperty('user.home')}/.nvm"
-    def nodeVersionsDir = file("$nvmDir/versions/node")
-    def nvmMatches = nodeVersionsDir.exists()
-            ? nodeVersionsDir.listFiles()
-                    ?.collect { file("${it.absolutePath}/bin/$executableName") }
-                    ?.findAll { it.canExecute() }
-                    ?.sort { a, b -> b.absolutePath <=> a.absolutePath }
-            : []
-    def nvmMatch = nvmMatches ? nvmMatches[0] : null
-
-    if (nvmMatch != null) {
-        return nvmMatch.absolutePath
-    }
-
-    throw new GradleException("Could not find npm. Install Node.js/npm or make npm available on the PATH used by Gradle.")
+node {
+    version = '22.13.1'
+    download = true
+    nodeProjectDir = file('src/main/client')
 }
 
-tasks.register('npmInstall', Exec) {
-    workingDir = file('src/main/client')
-    commandLine npmExecutable(), 'install'
+tasks.named('npmInstall') {
+    args = ['ci']
     inputs.file 'src/main/client/package.json'
     inputs.file 'src/main/client/package-lock.json'
     outputs.dir 'src/main/client/node_modules'
 }
 
-tasks.register('buildFrontend', Exec) {
+tasks.register('buildFrontend', com.github.gradle.node.npm.task.NpmTask) {
     dependsOn 'npmInstall'
-    workingDir = file('src/main/client')
-    commandLine npmExecutable(), 'run', 'build'
+    args = ['run', 'build']
     inputs.dir 'src/main/client/src'
     inputs.file 'src/main/client/index.html'
     inputs.file 'src/main/client/package.json'
