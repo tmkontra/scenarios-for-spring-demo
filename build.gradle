@@ -1,0 +1,91 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.4.1'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'io.github.tmkontra'
+version = '0.0.1-SNAPSHOT'
+description = 'scenarios-for-spring-demo'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    implementation platform('org.springframework.boot:spring-boot-dependencies:3.4.1')
+
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'io.github.tmkontra:scenarios-for-spring:0.0.1-SNAPSHOT'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+def npmExecutable = {
+    def executableName = System.getProperty('os.name').toLowerCase().contains('windows') ? 'npm.cmd' : 'npm'
+    def pathMatch = System.getenv('PATH')
+            ?.split(File.pathSeparator)
+            ?.collect { file("$it/$executableName") }
+            ?.find { it.canExecute() }
+
+    if (pathMatch != null) {
+        return pathMatch.absolutePath
+    }
+
+    def nvmDir = System.getenv('NVM_DIR') ?: "${System.getProperty('user.home')}/.nvm"
+    def nodeVersionsDir = file("$nvmDir/versions/node")
+    def nvmMatches = nodeVersionsDir.exists()
+            ? nodeVersionsDir.listFiles()
+                    ?.collect { file("${it.absolutePath}/bin/$executableName") }
+                    ?.findAll { it.canExecute() }
+                    ?.sort { a, b -> b.absolutePath <=> a.absolutePath }
+            : []
+    def nvmMatch = nvmMatches ? nvmMatches[0] : null
+
+    if (nvmMatch != null) {
+        return nvmMatch.absolutePath
+    }
+
+    throw new GradleException("Could not find npm. Install Node.js/npm or make npm available on the PATH used by Gradle.")
+}
+
+tasks.register('npmInstall', Exec) {
+    workingDir = file('src/main/client')
+    commandLine npmExecutable(), 'install'
+    inputs.file 'src/main/client/package.json'
+    inputs.file 'src/main/client/package-lock.json'
+    outputs.dir 'src/main/client/node_modules'
+}
+
+tasks.register('buildFrontend', Exec) {
+    dependsOn 'npmInstall'
+    workingDir = file('src/main/client')
+    commandLine npmExecutable(), 'run', 'build'
+    inputs.dir 'src/main/client/src'
+    inputs.file 'src/main/client/index.html'
+    inputs.file 'src/main/client/package.json'
+    inputs.file 'src/main/client/package-lock.json'
+    inputs.file 'src/main/client/tsconfig.json'
+    inputs.file 'src/main/client/vite.config.ts'
+    inputs.files fileTree('src/main/client') {
+        include '.env*'
+    }
+    outputs.dir 'src/main/resources/static'
+}
+
+tasks.named('processResources') {
+    dependsOn 'buildFrontend'
+}

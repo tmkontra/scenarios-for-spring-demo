@@ -1,0 +1,242 @@
+:root {
+  color: #17202a;
+  background: #f4f7fb;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  line-height: 1.5;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+a {
+  color: inherit;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+.app-shell {
+  width: min(920px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 64px 0;
+}
+
+.page-header {
+  margin-bottom: 28px;
+}
+
+.panel {
+  background: #ffffff;
+  border: 1px solid #d8e2ed;
+  border-radius: 8px;
+  box-shadow: 0 18px 45px rgb(32 56 85 / 10%);
+  padding: 32px;
+}
+
+.panel + .panel {
+  margin-top: 20px;
+}
+
+.panel.compact {
+  padding: 24px;
+}
+
+.demo-guide {
+  margin-bottom: 20px;
+}
+
+.demo-guide h2 {
+  margin-bottom: 10px;
+}
+
+.demo-guide h3 {
+  margin: 0 0 10px;
+  font-size: 1rem;
+}
+
+.demo-guide p {
+  margin-bottom: 0;
+}
+
+.demo-guide code {
+  display: inline-block;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  border-radius: 4px;
+  background: #eef3f7;
+  color: #17202a;
+  font-size: 0.92em;
+  padding: 1px 5px;
+}
+
+.guide-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.25fr);
+  gap: 24px;
+  margin-top: 22px;
+}
+
+.guide-grid ol {
+  margin: 0;
+  padding-left: 22px;
+  color: #415062;
+}
+
+.guide-grid li + li,
+.guide-grid p + p {
+  margin-top: 10px;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.endpoint-card {
+  display: grid;
+  grid-template-rows: auto auto auto minmax(150px, 1fr);
+  gap: 18px;
+  min-width: 0;
+  background: #ffffff;
+  border: 1px solid #d8e2ed;
+  border-radius: 8px;
+  box-shadow: 0 18px 45px rgb(32 56 85 / 10%);
+  padding: 24px;
+}
+
+.endpoint-card label {
+  display: grid;
+  gap: 8px;
+  color: #415062;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.endpoint-card input,
+.endpoint-card select {
+  width: 100%;
+  min-height: 42px;
+  border: 1px solid #b9c7d8;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #17202a;
+  padding: 0 12px;
+}
+
+.eyebrow {
+  margin: 0 0 12px;
+  color: #28666e;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+h1,
+h2,
+p {
+  margin-top: 0;
+}
+
+h1 {
+  margin-bottom: 16px;
+  font-size: clamp(2rem, 7vw, 4rem);
+  line-height: 1;
+}
+
+h2 {
+  margin-bottom: 12px;
+  font-size: 1.35rem;
+}
+
+p {
+  max-width: 62ch;
+  color: #415062;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.button {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  background: #0b6bcb;
+  color: #ffffff;
+  font-weight: 700;
+  padding: 0 18px;
+  text-decoration: none;
+  border: 0;
+  cursor: pointer;
+}
+
+.button.secondary {
+  border: 1px solid #b9c7d8;
+  background: #ffffff;
+  color: #17202a;
+}
+
+.button:disabled {
+  cursor: wait;
+  opacity: 0.72;
+}
+
+pre {
+  overflow: auto;
+  margin: 0;
+  border-radius: 6px;
+  background: #111827;
+  color: #f7fafc;
+  padding: 16px;
+  white-space: pre-wrap;
+  min-height: 150px;
+}
+
+pre.error {
+  background: #7f1d1d;
+}
+
+@media (max-width: 560px) {
+  .app-shell {
+    width: min(100% - 20px, 920px);
+    padding: 24px 0;
+  }
+
+  .panel {
+    padding: 22px;
+  }
+
+  .card-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .guide-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .endpoint-card {
+    padding: 20px;
+  }
+
+  .actions,
+  .button {
+    width: 100%;
+  }
+}
